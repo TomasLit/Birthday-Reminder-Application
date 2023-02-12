@@ -110,4 +110,4 @@ print("number of errors = ", count)
 if count > 0:
     print("There are errors in the data file. Please correct data file before running program. You can find information about all errors in logs_and_errors.txt file ")
 else:
-    import check_data
+    import check_data_for_birthdays
