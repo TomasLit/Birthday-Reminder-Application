@@ -1,15 +1,17 @@
 import csv
 import smtplib
-import socket
-from check_data_for_birthdays import upcoming_birthdays
 from check_errors import data_file
+from check_data_for_birthdays import upcoming_birthdays
 
-
+# Counting how many persons will have birthdays
 upcoming_birthday_count = len(upcoming_birthdays)
 
+# Define the directory and name of data file e-mail server information will be saved 
+login_file_path = 'Data files/login.csv'
 
 i=0
 
+# Function needed in case there would be more than 1 person with the birthday same day
 while i < upcoming_birthday_count:
     
     # Reading csv file
@@ -39,7 +41,7 @@ while i < upcoming_birthday_count:
                 if name not in upcoming_birthdays[i]:
 
                     # Reading e-mail server information from login.csv
-                    with open('Contacts/login.csv', 'r') as file:
+                    with open(login_file_path, 'r') as file:
                         reader = csv.reader(file)
                         header = next(reader, None)
                         if header is None:
@@ -75,6 +77,8 @@ while i < upcoming_birthday_count:
                                         message = f"Hi {name},\n\n This is a reminder that {name_of_birthday_person} will be celebrating their birthday on {date}.\n\n There are 7 days left to get a present! \n"
                                         email_text = f"Subject: {subject}\n\n{message}"
                                         server.sendmail(sender_email, recipient_email, email_text)
+                                        with open('logs_and_errors.txt', 'a') as file:
+                                            file.write(f"Email successfully sent to {name}!")
                                         print(f"Email successfully sent to {name}!")
                                         server.quit()
                                         break
