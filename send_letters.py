@@ -1,13 +1,12 @@
 import csv
 import smtplib
-from check_errors import data_file
+from constants import contacts_file
+from constants import logs_errors
+from constants import login_file_path
 from check_data_for_birthdays import upcoming_birthdays
 
 # Counting how many persons will have birthdays
 upcoming_birthday_count = len(upcoming_birthdays)
-
-# Define the directory and name of data file e-mail server information will be saved 
-login_file_path = 'Data files/login.csv'
 
 i=0
 
@@ -15,7 +14,7 @@ i=0
 while i < upcoming_birthday_count:
     
     # Reading csv file
-    with open(data_file, 'r') as file:
+    with open(contacts_file, 'r') as file:
             reader = csv.reader(file)
             header = next(reader)
 
@@ -45,14 +44,14 @@ while i < upcoming_birthday_count:
                         reader = csv.reader(file)
                         header = next(reader, None)
                         if header is None:
-                            with open('logs_and_errors.txt', 'a') as file:
+                            with open(logs_errors, 'a') as file:
                                 file.write("No header row found in the login.csv file" + "\n")     
                             print("No header row found in the login.csv file")
                         else:
                             # Get the first row of data
                             data = next(reader, None)
                             if data is None:
-                                with open('logs_and_errors.txt', 'a') as file:
+                                with open(logs_errors, 'a') as file:
                                     file.write("No data found in the login.csv file" + "\n")
                                 print("No data found in the CSV file")
                             else:
@@ -77,21 +76,21 @@ while i < upcoming_birthday_count:
                                         message = f"Hi {name},\n\n This is a reminder that {name_of_birthday_person} will be celebrating their birthday on {date}.\n\n There are 7 days left to get a present! \n"
                                         email_text = f"Subject: {subject}\n\n{message}"
                                         server.sendmail(sender_email, recipient_email, email_text)
-                                        with open('logs_and_errors.txt', 'a') as file:
-                                            file.write(f"Email successfully sent to {name}!")
+                                        with open(logs_errors, 'a') as file:
+                                            file.write(f"Email successfully sent to {name}!" + "\n")
                                         print(f"Email successfully sent to {name}!")
                                         server.quit()
                                         break
                                     except Exception as e:
-                                        print(f'Attempt No. {j+1} to send mail to {name} failed: {e}')
-                                        with open('logs_and_errors.txt', 'a') as file:
-                                            file.write(f'Attempt No. {j+1} to send mail to {name} failed: {e}' + "\n")
+                                        print(f"Attempt No. {j+1} to send mail to {name} failed: {e}")
+                                        with open(logs_errors, "a") as file:
+                                            file.write(f"Attempt No. {j+1} to send mail to {name} failed: {e}" + "\n")
                                         j+=1
                                         continue
                                 else:
-                                    with open('logs_and_errors.txt', 'a') as file:
-                                        file.write(f'All 3 attempts to send the email to {name} have failed.' + "\n")
-                                    print(f'All 3 attempts to send the email to {name} have failed.')                            
+                                    with open(logs_errors, "a") as file:
+                                        file.write(f"All 3 attempts to send the email to {name} have failed." + "\n")
+                                    print(f"All 3 attempts to send the email to {name} have failed.")                            
 
     file.close()
     i+=1

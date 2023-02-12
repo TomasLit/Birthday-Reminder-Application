@@ -3,37 +3,24 @@ import os
 import csv
 import sys
 from datetime import datetime
+from constants import login_file_path
+from constants import logs_errors
+from constants import log
+from constants import create_login_file
+
+log()
 
 
 # Define the task name
 task_name = "Birthday reminder app"
 
-# Define the directory and name of data file e-mail server information will be saved 
-file_path = 'Data files/login.csv'
 
 # Introduction to the App
 print("B I R T H D A Y   R E M I N D E R   A P P \n")
 print("Welcome to Birthday Reminder App! Please follow the installation instructions below.\n")
 
 
-# Function that creates login.csv file where users e-mail server data is saved
-def create_login_file():
-    print("To send e-mails the program need to collect your e-mail server data: \n")
-    # Creating the CSV file and writing the header row
-    with open(file_path, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['login', 'password', 'host', 'port', 'sender_email'])
-            
-        # Prompt the user for the data
-        login = input("Enter login: ")
-        password = input("Enter password: ")
-        host = input("Enter host: ")
-        port = input("Enter port: ")
-        sender_email = input("Enter sender_email: ")
-        print("")
-            
-        # Write the data to the CSV file
-        writer.writerow([login, password, host, port, sender_email])
+
 
 
 # Function that creates or deletes a daily task in Windows Task Scheduler
@@ -59,7 +46,10 @@ def task():
         if return_code == 0:
             print("Task was successful created!")
         else:
-            print("Error during installation. Return code: ", return_code)
+            text = "Error during installation. Return code: " + str(return_code) + "\n"
+            with open(logs_errors, "a") as file:
+                file.write(text)
+            print(text, return_code)
         
         # Instruction how to manually create a daily task in Windows Task Scheduler 
         print("")
@@ -79,19 +69,22 @@ def task():
         if return_code == 0:
             print("Task was successfully deleted. \n")
         else:
-            print("Error: Task was not deleted. Most likely it wasn't created before. Error return code:", return_code, "\n")   
+            text = "Error: Task was not deleted. Most likely it wasn't created before. Error return code:" + str(return_code) + "\n"
+            with open(logs_errors, "a") as file:
+                file.write(text)
+            print(text)
     else:
         print("")
         print("You have selected wrong letters, please try again! \n")
         return task()
 
 def start_app():
-    if os.path.exists(file_path):
-        login_file_found = input("Program found your e-mail server information from the previous session. Would you like to keept it or overwrite it? [K]eep or [O]verwrite? ")
+    if os.path.exists(login_file_path):
+        login_file_found = input("Program found your e-mail server information from the previous session. Would you like to overwrite it? Y/N? ")
         print("")
-        if login_file_found == "K" or login_file_found == "k":
+        if login_file_found == "N" or login_file_found == "n":
             task()
-        elif login_file_found == "O" or login_file_found == "o":
+        elif login_file_found == "Y" or login_file_found == "y":
             create_login_file()
             task()
         else:

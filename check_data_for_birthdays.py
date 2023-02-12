@@ -1,21 +1,23 @@
 import csv
 import datetime
-from check_errors import data_file
+from constants import contacts_file
 
 
+# Capturing current date
 now = datetime.datetime.now()
 now_formatted = now.strftime("%m-%d")
 now_datetime = datetime.datetime.strptime(now_formatted, "%m-%d")
+
+# Calculating a week
 week = datetime.timedelta(days=7)
 
-
-# Creating the list where all birthdays 
+# Creating the list where all birthdays will be stored
 upcoming_birthdays = []
 
 
-with open(data_file, 'r') as file:
+# Reading csv file
+with open(contacts_file, 'r') as file:
     reader = csv.reader(file)
-    # skip the first row with headers
     headers = next(reader) 
     birthdate_index = headers.index('birthdate')
 
