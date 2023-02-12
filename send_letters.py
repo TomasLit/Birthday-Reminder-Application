@@ -1,7 +1,7 @@
 import csv
 import smtplib
 import socket
-from check_data import upcoming_birthdays
+from check_data_for_birthdays import upcoming_birthdays
 from check_errors import data_file
 
 
