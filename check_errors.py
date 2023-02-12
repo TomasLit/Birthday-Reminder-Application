@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 # Directory of the data file with all of information
-data_file = "Contacts/contacts.csv"
+data_file = "Data files/contacts.csv"
 
 
 def log():

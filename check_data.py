@@ -33,27 +33,7 @@ with open(data_file, 'r') as file:
 # Checking if there is a need to send reminding letters 
 count = len(upcoming_birthdays)
 if count > 0:
-    print("upcoming_birthdays = ", count, upcoming_birthdays)
-    import send_letter
+    print("Number of upcoming_birthdays = ", count)
+    import send_letters
 else:
-    print("There are no upcoming birthdays")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    print("There are no upcoming birthdays!")
