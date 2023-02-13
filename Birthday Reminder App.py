@@ -24,16 +24,17 @@ print("Welcome to Birthday Reminder App! Please follow the installation instruct
 
 # Function that creates or deletes a daily task in Windows Task Scheduler
 def function_task():
-    print("To create a new task in Windows Task Scheduler so the program would run daily write letter - W")
-    print("To delete previously written task in Windows Task Scheduler write letter - D")
-    print("To send birthday reminding letters right now press letter - S")
-    print("To read instruction how to manually create a daily task in Windows Task Scheduler - H")
-    print("To quit - press letter - Q")
-    task = input("What do you want to do? (W/D/S/H/Q)? ")
+    print("To [C]reate a new task in Windows Task Scheduler so the program would run daily write letter - C")
+    print("To [D]elete previously written task in Windows Task Scheduler write letter - D")
+    print("To [S]end birthday reminding letters right now press letter - S")
+    print("To [O]pen logs_and_errors file press letter - O")
+    print("To [R]ead instruction how to manually create a daily task in Windows Task Scheduler press - H")
+    print("To [Q]uit - press letter - Q")
+    task = input("What do you want to do? (C/D/S/O/R/Q)? ")
     print("")
 
     # Creating the new task in Windows Task Scheduler
-    if task == "w" or task == "W":
+    if task == "c" or task == "C":
         while True:
             time_input = input("Enter the time in the format 'HH:MM': ")
             try:
@@ -73,11 +74,26 @@ def function_task():
             return function_task()
 
 
+    # Will send birthday reminding letters right now
+    elif task == "s" or task == "S":
+        import check_errors
+
+
+    # Opens logs_and_errors file using Notepad
+    elif task == "o" or task == "O":
+        try:
+            subprocess.Popen(['notepad.exe', logs_errors])
+            return function_task()
+        except:
+            print("logs_and_errors.txt file does not exist")
+            return function_task()
+
+
     # Instruction how to manually create a daily task in Windows Task Scheduler 
-    elif task == "h" or task == "H":
+    elif task == "r" or task == "R":
         print("")
         print("In case you would like to create Windows Task Scheduler task manually please follow the instruction! \n")
-        print("Go to the start menu and search for \"task sheduler\". Then open it.")
+        print("Go to the start menu and search for \"Task Scheduler\". Then open it.")
         print("In the upper left corner select \"Action\" and \"Create Task\".")
         print("In the \"General\" segment write the name of the task. It doesn't matter how you will call it.")
         print("In the \"Triggers\" segment push \"New\" and select the time and how often you would like the App would remind about birthdays.")
@@ -87,11 +103,6 @@ def function_task():
         print("In the \"Start in\" line write: ", os.path.dirname(os.path.abspath(__file__)))
         print("\n")
         return function_task()
-
-
-    # Will send birthday reminding letters right now
-    elif task == "s" or task == "S":
-        import check_errors
 
 
     # Quit the program
