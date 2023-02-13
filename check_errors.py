@@ -6,19 +6,19 @@ from constants import login_file_path
 from constants import logs_errors
 from constants import log
 from constants import create_login_file
+from constants import last_log
 
 
-def start_app():
+# Checking if login.csv file exists
+def check_login_file():
     if os.path.exists(login_file_path):
-        print("file exists")
         return
     else:
-        print("need to create new file")
         create_login_file()
 
 
+# Append the error to the logs_and_errors.txt file
 def log_error(error):
-    # Append the error to the errors.csv file
     with open(logs_errors, "a") as file:
         file.write(error + "\n")
 
@@ -27,29 +27,27 @@ def log_error(error):
 errors = []
 
 
-def count_rows(file_path):    
-    # Read the cvs file
+# Read the cvs file
+def count_rows(contacts_file):    
     try:
-        with open(file_path, "r") as file:
+        with open(contacts_file, "r") as file:
             reader = csv.reader(file)
             headers = next(reader)
             
             # Count the number of rows. There should be no more than 100 rows with entries.
             row_count = sum(1 for row in reader)
-            print(row_count)
             if row_count > 100:
                 errors.append("Data file has more than 100 entries! Please delete extra entries.")
-
+    
     except Exception as e:
         errors.append(str(e))
         log_error(str(e)) 
 
 
-def check_file(file_path):
-
-    # Read the cvs file
+# Read the cvs file
+def check_file(contacts_file):
     try:
-        with open(file_path, "r") as file:
+        with open(contacts_file, "r") as file:
             reader = csv.reader(file)
             headers = next(reader)
             required_columns = ["name", "email", "birthdate"]
@@ -58,8 +56,8 @@ def check_file(file_path):
             if any(col not in headers for col in required_columns):
                 errors.append("Data file is missing required columns")            
 
+            # Check if all required fields are present
             for i, row in enumerate(reader):
-                # Check if all required fields are present
                 if len(row) != len(headers):
                     errors.append(f"Row {i + 1} is missing required fields")
                 
@@ -87,42 +85,23 @@ def check_file(file_path):
 
 # Writing then the program started
 try:
-    start_app()
-    print("Login file exists")
-except Exception as e:
-    print(e)
-
-# Writing then the program started
-try:
+    check_login_file()
     log()
-    print("Logging done")
-except Exception as e:
-    print(e)
-
-# Counting the rows
-try:
     count_rows(contacts_file)
-    print("Rows counted")
-except Exception as e:
-    print(e)
-
-# Checking data
-try:
     check_file(contacts_file)
-    print("File checked")
-    print(errors)
 except Exception as e:
-    print(e)
+    log_error(str(e)) 
+
 
 # Checking if there are errors and proceeding or stopping the program
 count = len(errors)
-print("Number of errors = ", count)
+print("Number of errors found in contacts.csv file =", count)
 if count > 0:
     text = """There are errors in the data file. Please correct data file before running program 
 again. You can find information about all errors in logs_and_errors.txt file """
     with open(logs_errors, "a") as file:
         file.write(text + "\n")
     print(text)
-
+    last_log()
 else:
     import check_data_for_birthdays
