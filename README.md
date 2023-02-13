@@ -2,7 +2,7 @@
 
 Task of the program is to remind by e-mail a number of people about upcoming birthdays. The information about those people are stored in "contacts.csv" file located in "Data files" folder. 
 
-To start the program installation guide - run the "Birthday Reminder App.py". In this process you will have to write your e-mail server information which will be stored in newly created login.csv file. If the file is already created you would be able to keep it like that or overwrite the information inside it. After that the program will give you a menu to choose what you want to do next. Options:
+To start the program installation guide - run the "Birthday_Reminder_App.py". In this process you will have to write your e-mail server information which will be stored in newly created login.csv file. If the file is already created you would be able to keep it like that or overwrite the information inside it. After that the program will give you a menu to choose what you want to do next. Options:
 
 1. To [C]reate a new task in Windows Task Scheduler so the program would run daily. 
 2. To [D]elete previously written task in Windows Task Scheduler. 
