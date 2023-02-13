@@ -6,6 +6,7 @@ from constants import login_file_path
 from constants import logs_errors
 from constants import log
 from constants import create_login_file
+from constants import last_log
 
 
 # Function that writes a log when program starts
@@ -17,17 +18,18 @@ task_name = "Birthday reminder app"
 
 
 # Introduction to the App
-print("B I R T H D A Y   R E M I N D E R   A P P \n")
+print("B I R T H D A Y   R E M I N D E R   A P P \n \n")
 print("Welcome to Birthday Reminder App! Please follow the installation instructions below.\n")
 
 
 # Function that creates or deletes a daily task in Windows Task Scheduler
-def task():
-    print("To create a new task in Windows Task Scheduler so the program would run daily in automatic mode write letter - W")
+def function_task():
+    print("To create a new task in Windows Task Scheduler so the program would run daily write letter - W")
     print("To delete previously written task in Windows Task Scheduler write letter - D")
+    print("To send birthday reminding letters right now press letter - S")
     print("To read instruction how to manually create a daily task in Windows Task Scheduler - H")
-    print("To quit - press letter - Q ")
-    task = input("What do you want to do? (W/D/H/Q)? ")
+    print("To quit - press letter - Q")
+    task = input("What do you want to do? (W/D/S/H/Q)? ")
     print("")
 
     # Creating the new task in Windows Task Scheduler
@@ -48,15 +50,29 @@ def task():
 
         if return_code == 0:
             print("Task was successful created! \n")
-            main()
+            return function_task()
         else:
-            text = "Error during installation. Return code: " + str(return_code) + "\n"
+            text = "ERROR during installation. Return code: " + str(return_code) + "\n"
             with open(logs_errors, "a") as file:
                 file.write(text)
             print(text, return_code)
-            main()
+            return function_task()
 
-        
+
+    # Delete previously created task
+    elif task == "d" or task == "D":
+        return_code = subprocess.call(['schtasks', '/delete', '/tn', task_name, '/f'])
+        if return_code == 0:
+            print("Task was successfully deleted. \n")
+            return function_task()
+        else:
+            text = "ERROR: Task was not deleted. Most likely it wasn't created before. Error return code: " + str(return_code) + "\n"
+            with open(logs_errors, "a") as file:
+                file.write(text)
+            print(text)
+            return function_task()
+
+
     # Instruction how to manually create a daily task in Windows Task Scheduler 
     elif task == "h" or task == "H":
         print("")
@@ -70,24 +86,17 @@ def task():
         print("In the \"Add arguments\" line write: check_errors.py")
         print("In the \"Start in\" line write: ", os.path.dirname(os.path.abspath(__file__)))
         print("\n")
-        
+        return function_task()
 
-    # Delete previously created task
-    elif task == "d" or task == "D":
-        return_code = subprocess.call(['schtasks', '/delete', '/tn', task_name, '/f'])
-        if return_code == 0:
-            print("Task was successfully deleted. \n")
-            main()
-        else:
-            text = "Error: Task was not deleted. Most likely it wasn't created before. Error return code:" + str(return_code) + "\n"
-            with open(logs_errors, "a") as file:
-                file.write(text)
-            print(text)
-            main()
+
+    # Will send birthday reminding letters right now
+    elif task == "s" or task == "S":
+        import check_errors
 
 
     # Quit the program
     elif task == "q" or task == "Q":
+        last_log()
         sys.exit(0)
 
 
@@ -95,7 +104,7 @@ def task():
     else:
         print("")
         print("You have selected wrong letters, please try again! \n")
-        return task()
+        return function_task()
 
 
 # Main function that controls the logic of the file
@@ -104,14 +113,14 @@ def main():
         login_file_found = input("Program found your e-mail server information from the previous session. Would you like to overwrite it? (Y/N)? ")
         print("")
         if login_file_found == "N" or login_file_found == "n":
-            task()
+            function_task()
         elif login_file_found == "Y" or login_file_found == "y":
             create_login_file()
-            task()
+            function_task()
         else:
             print("You have selected wrong letters, please try again! \n")
             main()
     else:
         create_login_file()
-        task()
+        function_task()
 main()
