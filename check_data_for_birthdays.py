@@ -1,7 +1,8 @@
 import csv
 import datetime
-from constants import contacts_file
-from constants import logs_errors
+from constants import CONTACTS_PATH
+from constants import LOGS_ERR_PATH
+from functions import last_log
 
 
 # Capturing current date
@@ -17,7 +18,7 @@ upcoming_birthdays = []
 
 
 # Reading csv file
-with open(contacts_file, "r") as file:
+with open(CONTACTS_PATH, "r") as file:
     reader = csv.reader(file)
     headers = next(reader) 
     birthdate_index = headers.index("birthdate")
@@ -31,16 +32,13 @@ with open(contacts_file, "r") as file:
             upcoming_birthdays.append(name)
 
 
-# Checking if there is a need to send reminding letters 
-count = len(upcoming_birthdays)
-if count > 0:
-    text = "Number of upcoming birthdays = " + str(count) + "\n"
-    with open(logs_errors, "a") as file:
-        file.write(text)
-    print(text)
-    import send_letters
-else:
+count_bir = len(upcoming_birthdays)
+
+if count_bir == 0:
+
     text = "There are no upcoming birthdays! \n"
-    with open(logs_errors, "a") as file:
+    with open(LOGS_ERR_PATH, "a") as file:
         file.write(text)
     print(text)
+
+    last_log()
