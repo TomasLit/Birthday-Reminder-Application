@@ -1,17 +1,17 @@
 import csv
 import os
 from datetime import datetime
-from constants import contacts_file
-from constants import login_file_path
-from constants import logs_errors
-from constants import log
-from constants import create_login_file
-from constants import last_log
+from constants import CONTACTS_PATH
+from constants import LOGIN_PATH
+from constants import LOGS_ERR_PATH
+from functions import log
+from functions import create_login_file
+from functions import last_log
 
 
 # Checking if login.csv file exists
 def check_login_file():
-    if os.path.exists(login_file_path):
+    if os.path.exists(LOGIN_PATH):
         return
     else:
         create_login_file()
@@ -19,7 +19,7 @@ def check_login_file():
 
 # Append the error to the logs_and_errors.txt file
 def log_error(error):
-    with open(logs_errors, "a") as file:
+    with open(LOGS_ERR_PATH, "a") as file:
         file.write(error + "\n")
 
 
@@ -28,9 +28,9 @@ errors = []
 
 
 # Read the cvs file
-def count_rows(contacts_file):    
+def count_rows(CONTACTS_PATH):    
     try:
-        with open(contacts_file, "r") as file:
+        with open(CONTACTS_PATH, "r") as file:
             reader = csv.reader(file)
             headers = next(reader)
             
@@ -45,9 +45,9 @@ def count_rows(contacts_file):
 
 
 # Read the cvs file
-def check_file(contacts_file):
+def check_file(CONTACTS_PATH):
     try:
-        with open(contacts_file, "r") as file:
+        with open(CONTACTS_PATH, "r") as file:
             reader = csv.reader(file)
             headers = next(reader)
             required_columns = ["name", "email", "birthdate"]
@@ -86,22 +86,24 @@ def check_file(contacts_file):
 # Writing then the program started
 try:
     check_login_file()
-    log()
-    count_rows(contacts_file)
-    check_file(contacts_file)
+    count_rows(CONTACTS_PATH)
+    check_file(CONTACTS_PATH)
 except Exception as e:
     log_error(str(e)) 
 
 
-# Checking if there are errors and proceeding or stopping the program
-count = len(errors)
-print("Number of errors found in contacts.csv file =", count)
-if count > 0:
+# Counting the number of errors
+count_err = len(errors)
+
+
+# In case there are errors prints warning message
+if count_err > 0:
+
     text = """There are errors in the data file. Please correct data file before running program 
-again. You can find information about all errors in logs_and_errors.txt file """
-    with open(logs_errors, "a") as file:
+again. You can find information about all errors in logs_and_errors.txt file. """
+        
+    with open(LOGS_ERR_PATH, "a") as file:
         file.write(text + "\n")
-    print(text)
+    print(text + "\n")
+
     last_log()
-else:
-    import check_data_for_birthdays
